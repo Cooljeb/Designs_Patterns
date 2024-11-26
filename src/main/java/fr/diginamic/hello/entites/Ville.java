@@ -1,13 +1,32 @@
 package fr.diginamic.hello.entites;
 
+import jakarta.persistence.*;
+
 /**
  * Classe des villes
  */
+@Entity
+@Table(name = "Ville")
 public class Ville {
+
+    /**id de la ville*/
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Integer id;
     /**nom de la ville*/
+    @Column(name = "NOM", nullable = false, length =100)
     private String nom;
     /**nombre d'habitants de la ville*/
+    @Column(name = "NB_HABITANTS", nullable = false, length =10)
     private Integer nbHabitants;
+
+    /**
+     * Constructeur par défaut de la ville pour JPA
+     */
+    public Ville() {
+
+    }
 
     /**
      * Constructeur de la ville
@@ -18,6 +37,19 @@ public class Ville {
         this.nom = nom;
         this.nbHabitants = nbHabitants;
     }
+
+    /**
+     * Constructeur de la ville avec un ID
+     * @param id
+     * @param nom
+     * @param nbHabitants
+     */
+    public Ville(Integer id, String nom, Integer nbHabitants) {
+        this.id = id;
+        this.nom = nom;
+        this.nbHabitants = nbHabitants;
+    }
+
 
     /**
      * Renvoie la valeur de {@link #nom}.
@@ -53,5 +85,14 @@ public class Ville {
      */
     public void setNbHabitants(Integer nbHabitants) {
         this.nbHabitants = nbHabitants;
+    }
+
+    /**
+     * Renvoie la valeur de {@link #id}.
+     *
+     * @return la valeur actuelle de id.
+     */
+    public Integer getId() {
+        return id;
     }
 }
