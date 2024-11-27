@@ -6,20 +6,23 @@ import jakarta.persistence.*;
  * Classe des villes
  */
 @Entity
-@Table(name = "Ville")
+@Table
 public class Ville {
 
     /**id de la ville*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
-    private Integer id;
+    @Column(nullable = false)
+    private Long id;
     /**nom de la ville*/
-    @Column(name = "NOM", nullable = false, length =100)
+    @Column( nullable = false, length =100)
     private String nom;
     /**nombre d'habitants de la ville*/
-    @Column(name = "NB_HABITANTS", nullable = false, length =10)
+    @Column(nullable = false, length =10)
     private Integer nbHabitants;
+    /**lien vers le département de la ville*/
+    @ManyToOne
+    private Departement departement;
 
     /**
      * Constructeur par défaut de la ville pour JPA
@@ -44,18 +47,23 @@ public class Ville {
      * @param nom
      * @param nbHabitants
      */
-    public Ville(Integer id, String nom, Integer nbHabitants) {
+    public Ville(Long id, String nom, Integer nbHabitants) {
         this.id = id;
         this.nom = nom;
         this.nbHabitants = nbHabitants;
     }
+    public Ville(String nom, Integer nbHabitants, Departement departement) {
+        this.nom = nom;
+        this.nbHabitants = nbHabitants;
+        this.departement = departement;
+    }
 
 
-    /**
-     * Renvoie la valeur de {@link #nom}.
-     *
-     * @return la valeur actuelle de nom.
-     */
+        /**
+         * Renvoie la valeur de {@link #nom}.
+         *
+         * @return la valeur actuelle de nom.
+         */
     public String getNom() {
         return nom;
     }
@@ -92,7 +100,7 @@ public class Ville {
      *
      * @return la valeur actuelle de id.
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 }

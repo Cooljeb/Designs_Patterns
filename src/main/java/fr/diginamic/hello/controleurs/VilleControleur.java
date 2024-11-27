@@ -19,49 +19,70 @@ public class VilleControleur {
     VilleService villes;
 
 
+    /**
+     * Méthode extractVille qui renvoi la liste de villes connues dans la base
+     * @return  la liste de toutes les villes
+     */
     @GetMapping
     public List<Ville> extractVille(){
         return villes.extractVille();
     }
+    /**
+     * Méthode extractVille
+     * @param  id corresponf à l'id de la ville recherchée
+     * @return la ville correspondant à l'id passé en paramètre
+     */
     @GetMapping("/{id}")
-    public List<Ville> extractVille(int id) {
-        return villes.extractVille();
+    public Ville extractVille(@PathVariable("id")  Long id) {
+        return villes.extractVille(id);
+    }
+
+    /**
+     * Méthode extractVille
+     * @param  nom corresponf à l'id de la ville recherchée
+     * @return la ville correspondant à l'id passé en paramètre
+     */
+    @GetMapping("/nom/{nom}")
+    public Ville extractVille(@PathVariable("nom")  String nom) {
+        return villes.extractVille(nom);
     }
 
     @PostMapping
-    public ResponseEntity<String> insertVille(@Valid @RequestBody Ville ville, BindingResult result) {
+    public ResponseEntity<String> insertVille(@RequestBody Ville ville) {
 
-        if (result.hasErrors()) {
-            return new ResponseEntity<String>("Problème de validation des contraintes !",HttpStatus.BAD_REQUEST);
-        }
-        if (villes.villeVerif(ville)) {
+        try {
             villes.insertVille(ville);
-            return new ResponseEntity<String>("Succès !",HttpStatus.OK);
-        }else {
-            return new ResponseEntity<String>("La ville existe déjà !",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Succès !", HttpStatus.OK);
+        }catch (Exception e) {
+                return new ResponseEntity<String>("La ville existe déjà !",HttpStatus.BAD_REQUEST);
         }
     }
     @PutMapping
-    public ResponseEntity<String> modifierVille(@Valid @RequestBody Ville ville, BindingResult result) {
-        if (result.hasErrors()) {
-            return new ResponseEntity<String>("Problème de validation des contraintes !",HttpStatus.BAD_REQUEST);
-        }
-        if (villes.villeVerif(ville)) {
+    public ResponseEntity<String> modifierVille( @RequestBody Ville ville) {
+
+        try {
             villes.modifierVille(ville.getId(), ville);
             return new ResponseEntity<String>("Succès !",HttpStatus.OK);
-        }else {
+        }catch (Exception e) {
             return new ResponseEntity<String>("La mise à jour a échouée !",HttpStatus.BAD_REQUEST);
         }
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> supprimerVille(@PathVariable Long id) {
-        int v = Integer.parseInt(id.toString()); // conversione int de l'id
         try{
-            villes.supprimerVille(v);
+            villes.supprimerVille(id);
             return new ResponseEntity<>("Succès!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("La supression a échouée !",HttpStatus.BAD_REQUEST);
         }
     }
+    /**
+     * Les n plus grandes villes d'un dep
+     */
+    @GetMapping("/rechercheVilleLesPlusPeuplees/{codeDep}/{n}")
+    public List<Ville> rechercheVilleLesPlusPeuplees(@PathVariable("codeDep")String codeDep, @PathVariable("n") Integer n) {
+        return villes.rechercheVilleLesPlusPeuplees(codeDep,n);
+    }
+
 
 }
