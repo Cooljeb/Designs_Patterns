@@ -16,7 +16,7 @@ import java.util.List;
 public class VilleControleur {
 
     @Autowired
-    VilleService villes;
+    private VilleService villes;
 
 
     /**

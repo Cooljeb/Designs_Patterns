@@ -98,4 +98,31 @@ public class Departement {
     public void setVilles(List<Ville> villes) {
         this.villes = villes;
     }
+
+    /**
+     * Définit la valeur de {@link #id}.
+     *
+     * @param id la nouvelle valeur de id.
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Définit la valeur de {@link #nom}.
+     *
+     * @param nom la nouvelle valeur de nom.
+     */
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    /**
+     * Définit la valeur de {@link #code}.
+     *
+     * @param code la nouvelle valeur de code.
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

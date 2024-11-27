@@ -1,8 +1,10 @@
 package fr.diginamic.hello.services;
 
-import fr.diginamic.hello.dao.VilleDao;
 import fr.diginamic.hello.entites.Ville;
+import fr.diginamic.hello.repositories.VilleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +14,8 @@ public class VilleService {
 
     /**déclaration du DAO pour la gestion des villes*/
     @Autowired
-    private VilleDao villeDao;
+    //private VilleDao villeDao;
+    private VilleRepository villeRepository;
 
     /**
      * Initialisation des villes de départ pour la base de données
@@ -33,7 +36,8 @@ public class VilleService {
      * @return Liste des villes
      */
     public List<Ville> extractVille(){
-        return villeDao.extractVille();
+        return villeRepository.findBy();
+        //return villeDao.extractVille();
     }
 
     /**
@@ -44,8 +48,8 @@ public class VilleService {
      * @return Ville
      */
     public Ville extractVille(Long id)  {
-
-            return villeDao.extractVille(id);
+            return villeRepository.findById(id).get();
+        //return villeDao.extractVille(id);
     }
 
     /**
@@ -55,7 +59,8 @@ public class VilleService {
      * @return Ville
      */
     public Ville extractVille(String nom) {
-            return villeDao.extractVille(nom);
+            //return villeDao.extractVille(nom);
+        return villeRepository.findByNom(nom);
     }
 
     /**
@@ -64,9 +69,19 @@ public class VilleService {
      * @return Liste des villes après ajout
      */
     public List<Ville> insertVille(Ville ville) {
-        villeDao.insertVille(ville);
-        return villeDao.extractVille();
+        Ville NouvelleVille = ville;
+        if(ville.getDepartement() != null) {
+            NouvelleVille.setDepartement(ville.getDepartement());
+        }
+        if(!villeRepository.existsByNom(ville.getNom())){
+            villeRepository.save(NouvelleVille);
+        }
+        return villeRepository.findBy();
+        //return villeDao.insertVille(ville);
     }
+//        villeDao.insertVille(ville);
+//        return villeDao.extractVille();
+
 
 
     /**
@@ -77,11 +92,13 @@ public class VilleService {
      * @return Liste des villes après modification
      */
     public List<Ville>modifierVille(Long idVille, Ville villeModifiee) {
-        Ville villeAModifier = villeDao.extractVille(idVille);
-        if (villeAModifier!= null) {
-            villeDao.modifierVille(villeAModifier.getId(), villeModifiee);
+        //Ville villeAModifier = villeDao.extractVille(idVille);
+        if(villeRepository.existsById(idVille)){
+            if(villeModifiee!= null){
+                villeRepository.save(villeModifiee);
+            }
         }
-        return villeDao.extractVille();
+        return villeRepository.findBy();
     }
 
     /**
@@ -91,14 +108,22 @@ public class VilleService {
      * @return Liste des villes après suppression
      */
     public List<Ville> supprimerVille(Long idVille) {
-        Ville villeASupprimer = villeDao.extractVille(idVille);
-        if (villeASupprimer!= null) {
-            villeDao.supprimerVille(villeASupprimer.getId());
+        //Ville villeASupprimer = villeDao.extractVille(idVille);
+        if(villeRepository.existsById(idVille)){
+            villeRepository.deleteById(idVille);
         }
-        return villeDao.extractVille();
+        return villeRepository.findBy();
     }
+//        Ville villeASupprimer = villeDao.extractVille(idVille);
+//        if (villeASupprimer!= null) {
+//            villeDao.supprimerVille(villeASupprimer.getId());
+//        }
+//        return villeDao.extractVille();
+
 
     public List<Ville> rechercheVilleLesPlusPeuplees(String codeDep, Integer n) {
-        return villeDao.rechercheVilleLesPlusPeuplees(codeDep,n);
+//       return villeDao.rechercheVilleLesPlusPeuplees(codeDep,n);
+        Pageable pageable = PageRequest.of(0, n);
+        return villeRepository.findByDepartementOrderByNbHabitants(codeDep, pageable);
     }
 }

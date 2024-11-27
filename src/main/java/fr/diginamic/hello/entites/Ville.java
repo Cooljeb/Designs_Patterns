@@ -103,4 +103,22 @@ public class Ville {
     public Long getId() {
         return id;
     }
+
+    /**
+     * Renvoie la valeur de {@link #departement}.
+     *
+     * @return la valeur actuelle de departement.
+     */
+    public Departement getDepartement() {
+        return departement;
+    }
+
+    /**
+     * Définit la valeur de {@link #departement}.
+     *
+     * @param departement la nouvelle valeur de departement.
+     */
+    public void setDepartement(Departement departement) {
+        this.departement = departement;
+    }
 }
