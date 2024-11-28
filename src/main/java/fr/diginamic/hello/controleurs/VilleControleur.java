@@ -84,5 +84,35 @@ public class VilleControleur {
         return villes.rechercheVilleLesPlusPeuplees(codeDep,n);
     }
 
+    /**
+     * Recherche de toutes les villes dont la population est supérieure à min
+     */
+    @GetMapping("/rechercheVillePopulationSuperieureAMin/Min/{min}")
+    public List<Ville> rechercheVillePopulationSuperieureAMin(@PathVariable("min")Integer min) {
+        return villes.findAllByNbHabitantsGreaterThan(min);
+    }
+
+    /**
+     * Recherche de toutes les villes dont la population est supérieure à min et inférieure à max
+     */
+    @GetMapping("/rechercheVillePopulationSuperieureAMinInferieureAMax/Min/{min}/Max/{max}")
+    public List<Ville> rechercheVillePopulationSuperieureAMinInferieureAMax(@PathVariable("min")Integer min,@PathVariable("max")Integer max ) {
+        return villes.findAllByNbHabitantsBetween(min,max);
+    }
+
+    /**
+     * Recherche de toutes les villes d’un département dont la population est supérieure à min et inférieure à max
+     */
+    @GetMapping("/rechercheVilleDUnDepartementPopulationSuperieureAMinInferieureAMax/Departement/" +
+            "{departement}/Min/{min}/Max/{max}")
+    public List<Ville> rechercheVillePopulationSuperieureAMinInferieureAMax(@PathVariable("departement")Long dptId
+            ,@PathVariable("min")Integer min,@PathVariable("max")Integer max ) {
+        return villes.findByDepartement_idAndNbHabitantsBetween(dptId,min,max);
+    }
+
+
+
+
+
 
 }

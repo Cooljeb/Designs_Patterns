@@ -1,7 +1,9 @@
 package fr.diginamic.hello.repositories;
 
+import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -44,7 +46,23 @@ public interface VilleRepository extends CrudRepository<Ville,Long> {
     /**
      * Suppression depuis l'id passé en paramètre
      */
-
     void deleteById(Long id);
+    /** Recherche de toutes les villes dont le nom commence par le mot passé en paramètre.*/
+    List<Ville> findAllByNomStartingWith(String mot);
+
+    /**Recherche de toutes les villes dont la population est supérieure à min (paramètre de type int)*/
+    List<Ville> findAllByNbHabitantsGreaterThan(Integer min);
+
+    /**Recherche de toutes les villes dont la population est supérieure à min et inférieure à max.*/
+    List<Ville> findAllByNbHabitantsBetween(Integer min, Integer max);
+
+    /**Recherche de toutes les villes d’un département dont la population est supérieure à min (paramètre de type int)*/
+    List<Ville> findByDepartement_idAndNbHabitantsGreaterThan(Long departement_id, Integer nbHabitants);
+
+    /**Recherche de toutes les villes d’un département dont la population est supérieure à min et inférieure à max.*/
+    List<Ville> findByDepartement_idAndNbHabitantsBetween(Long departement_id, Integer min, Integer max);
+
+    /**Recherche des n villes les plus peuplées d’un département donné (n est aussi un paramètre)**/
+    List<Ville>findByDepartement_idOrderByNbHabitantsDesc(Long departement_id,Pageable pageable);
 
 }

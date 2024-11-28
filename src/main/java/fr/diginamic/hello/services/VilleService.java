@@ -126,4 +126,33 @@ public class VilleService {
         Pageable pageable = PageRequest.of(0, n);
         return villeRepository.findByDepartementOrderByNbHabitants(codeDep, pageable);
     }
+
+    public List<Ville> findAllByNomStartingWith(String nom){
+        return villeRepository.findAllByNomStartingWith(nom);
+    }
+
+    public List<Ville> findAllByNbHabitantsGreaterThan(Integer min){
+        return villeRepository.findAllByNbHabitantsGreaterThan(min);
+    }
+
+    public List<Ville> findAllByNbHabitantsBetween(Integer min, Integer max){
+        return villeRepository.findAllByNbHabitantsBetween(min, max);
+    }
+
+    public List<Ville> findByDepartement_idAndNbHabitantsGreaterThan(Long departement_id, Integer nbHabitants){
+        return villeRepository.findByDepartement_idAndNbHabitantsGreaterThan(departement_id, nbHabitants);
+    }
+
+    public List<Ville> findByDepartement_idAndNbHabitantsBetween(Long departement_id, Integer min, Integer max){
+        return villeRepository.findByDepartement_idAndNbHabitantsBetween(departement_id, min, max);
+    }
+
+    public List<Ville>findByDepartement_idOrderByNbHabitantsDesc(Long departement_id,Integer n){
+        Pageable pageable = PageRequest.of(0, n);
+        return villeRepository.findByDepartement_idOrderByNbHabitantsDesc(departement_id, pageable);
+    }
+
+
+
+
 }
