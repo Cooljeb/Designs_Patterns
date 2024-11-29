@@ -79,7 +79,7 @@ public class VilleService {
 
     /**
      * <p>Méthode pour ajouter une ville dans la base de données </p>
-     * @param ville à ajouter
+     * @param villeDto à ajouter
      * @return Liste des villes après ajout
      */
     public Ville insertVille(VilleDto villeDto) {
