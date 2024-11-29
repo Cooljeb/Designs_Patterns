@@ -39,6 +39,10 @@ public class VilleService {
         return villeRepository.findBy();
         //return villeDao.extractVille();
     }
+    public List<Ville> extractVille(int page, int taille) {
+        int offset = page * taille; // Calcul de l'offset
+        return villeRepository.findAll(offset, taille);
+    }
 
     /**
      * <p>Méthode pour récupérer une ville à partir de son id

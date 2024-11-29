@@ -2,8 +2,10 @@ package fr.diginamic.hello.repositories;
 
 import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
+import org.hibernate.query.Page;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Limit;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -24,6 +26,9 @@ public interface VilleRepository extends CrudRepository<Ville,Long> {
 
     /**Retourne l'ensemble des villes*/
     List<Ville>findBy();
+
+    @Query("SELECT v FROM Ville v ORDER BY v.id")
+    List<Ville> findAll(@Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * Retourne une ville par son identifiant
