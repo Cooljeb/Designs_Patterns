@@ -1,6 +1,7 @@
 package fr.diginamic.hello.dto;
 
 import fr.diginamic.hello.entites.Departement;
+import fr.diginamic.hello.entites.Ville;
 
 /**
  * Ville DTO qui décrit qu'on renvoi au client
@@ -12,9 +13,21 @@ public class VilleDto {
     private Integer nbHabitants;
     private String codeDepartement;
     private String nomdepartement;
+    private Ville ville;
 
     public VilleDto() {
 
+    }
+
+    public VilleDto(Ville ville){
+        this.ville = ville;
+        this.id = ville.getId();
+        this.nom = ville.getNom();
+        this.nbHabitants = ville.getNbHabitants();
+        if(ville.getDepartement()!= null){
+            this.codeDepartement = ville.getDepartement().getCode();
+            this.nomdepartement = ville.getDepartement().getNom();
+        }
     }
 
     /**

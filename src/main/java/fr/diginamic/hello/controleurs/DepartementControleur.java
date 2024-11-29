@@ -1,7 +1,6 @@
 package fr.diginamic.hello.controleurs;
 
 import fr.diginamic.hello.entites.Departement;
-import fr.diginamic.hello.entites.Ville;
 import fr.diginamic.hello.services.DepartementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/departement")
@@ -29,8 +29,8 @@ public class DepartementControleur {
 
 
     @GetMapping("/nom/{nom}")
-    public Departement extractDepartement(@PathVariable("nom")  String nom) {
-        return departementService.extractDepartement(nom);
+    public Optional<Departement> extractDepartement(@PathVariable("nom")  String nom) {
+        return departementService.extractDepartementParNom(nom);
     }
 
     @PostMapping

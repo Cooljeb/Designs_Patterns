@@ -1,13 +1,19 @@
 package fr.diginamic.hello.services;
 
+import fr.diginamic.hello.dto.VilleDto;
+import fr.diginamic.hello.dto.VilleMapper;
+import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
+import fr.diginamic.hello.repositories.DepartementRepository;
 import fr.diginamic.hello.repositories.VilleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VilleService {
@@ -16,6 +22,10 @@ public class VilleService {
     @Autowired
     //private VilleDao villeDao;
     private VilleRepository villeRepository;
+    @Autowired
+    private DepartementService dpService;
+    @Autowired
+    private DepartementRepository departementRepository;
 
     /**
      * Initialisation des villes de départ pour la base de données
@@ -35,13 +45,8 @@ public class VilleService {
      * via la couche d'accès aux données
      * @return Liste des villes
      */
-    public List<Ville> extractVille(){
-        return villeRepository.findBy();
-        //return villeDao.extractVille();
-    }
-    public List<Ville> extractVille(int page, int taille) {
-        int offset = page * taille; // Calcul de l'offset
-        return villeRepository.findAll(offset, taille);
+    public Page<VilleDto> extractVillePageable(Pageable pageable){
+        return villeRepository.findAll(pageable).map(VilleDto::new);
     }
 
     /**
@@ -53,6 +58,11 @@ public class VilleService {
      */
     public Ville extractVille(Long id)  {
             return villeRepository.findById(id).get();
+        //return villeDao.extractVille(id);
+    }
+
+    public List <Ville> extractVille()  {
+        return villeRepository.findBy();
         //return villeDao.extractVille(id);
     }
 
@@ -72,15 +82,23 @@ public class VilleService {
      * @param ville à ajouter
      * @return Liste des villes après ajout
      */
-    public List<Ville> insertVille(Ville ville) {
-        Ville NouvelleVille = ville;
-        if(ville.getDepartement() != null) {
-            NouvelleVille.setDepartement(ville.getDepartement());
+    public Ville insertVille(VilleDto villeDto) {
+        Optional<Ville> nouvelleVille = villeRepository.findById(villeDto.getId());
+        // On vérifie que la ville n'est pas déjà présente
+        if(nouvelleVille.isPresent()){
+            throw  new IllegalArgumentException("Une ville avec le nom '" + villeDto.getNom() + "' existe déjà.");
         }
-        if(!villeRepository.existsByNom(ville.getNom())){
-            villeRepository.save(NouvelleVille);
+        //on vérifie que le département n'existe pas encore
+        Optional<Departement>dptNouvelleVille = departementRepository.findByNom(villeDto.getCodeDepartement());
+
+        if(dptNouvelleVille.isEmpty()){
+            throw  new IllegalArgumentException("Le département avec le code '"
+                    + villeDto.getCodeDepartement() + "' n'existe pas.");
         }
-        return villeRepository.findBy();
+        Ville ville = VilleMapper.toBean(villeDto);
+        ville.setDepartement(dptNouvelleVille.get());
+
+        return villeRepository.save(ville);
         //return villeDao.insertVille(ville);
     }
 //        villeDao.insertVille(ville);

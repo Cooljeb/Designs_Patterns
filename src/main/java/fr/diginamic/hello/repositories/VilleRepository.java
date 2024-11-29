@@ -1,17 +1,22 @@
 package fr.diginamic.hello.repositories;
 
+import fr.diginamic.hello.dto.VilleDto;
 import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
-import org.hibernate.query.Page;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.data.domain.Limit;
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +26,13 @@ import java.util.Optional;
  * @author Joseph BROU
  */
 @Repository
-public interface VilleRepository extends CrudRepository<Ville,Long> {
+public interface VilleRepository extends CrudRepository<Ville,Long>, JpaRepository<Ville,Long> {
     // Ajouter des méthodes spécifiques à votre repository pour votre application
 
     /**Retourne l'ensemble des villes*/
     List<Ville>findBy();
 
-    @Query("SELECT v FROM Ville v ORDER BY v.id")
-    List<Ville> findAll(@Param("offset") int offset, @Param("limit") int limit);
+    Page<Ville> findAll(Pageable pageable);
 
     /**
      * Retourne une ville par son identifiant

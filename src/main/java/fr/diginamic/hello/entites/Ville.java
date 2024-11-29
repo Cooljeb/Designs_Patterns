@@ -114,6 +114,15 @@ public class Ville {
     }
 
     /**
+     * Définit la valeur de {@link #id}.
+     *
+     * @param id la nouvelle valeur de id.
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
      * Définit la valeur de {@link #departement}.
      *
      * @param departement la nouvelle valeur de departement.

@@ -1,16 +1,21 @@
 package fr.diginamic.hello.services;
 
-import fr.diginamic.hello.dao.DepartementDao;
 import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
+import fr.diginamic.hello.repositories.DepartementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class DepartementService {
     @Autowired
-    DepartementDao departementDao;
+    DepartementRepository departementRepository;
+    //DepartementDao departementDa o;
 
 //    /**
 //     * Initialisation des villes de départ pour la base de données
@@ -25,35 +30,59 @@ public class DepartementService {
 //        villeDao.insertVille(new Ville("Madrid", 3_260_000));
 //    }
 
+//    /**
+//     * Méthode pour récupérer les villes depuis la base de données.
+//     * via la couche d'accès aux données
+//     * @return Liste des villes
+//     */
+////    public List<Departement> extractDepartement(){
+////        return departementDao.extractDepartement();
+////    }
     /**
-     * Méthode pour récupérer les villes depuis la base de données.
-     * via la couche d'accès aux données
-     * @return Liste des villes
+     * Méthode pour récupérer une liste de départements avec pagination
+     * @param pageable Les informations de pagination
+     * @return La page des départements
      */
-    public List<Departement> extractDepartement(){
-        return departementDao.extractDepartement();
+    public Page<Departement> extractDepartementPageable(Pageable pageable) {
+        return departementRepository.findAll(pageable);
     }
 
-    /**
-     * <p>Méthode pour récupérer un département à partir de son id
-     * via la couche d'accès aux données </p>
-     * <p> Si l'id est négatif, une exception est levée.</p>
-     * @param id id de la ville
-     * @return Ville
-     */
-    public Departement extractDepartement(Long id)  {
-
-        return departementDao.extractDepartement(id);
+    public List<Departement> extractDepartement() {
+        return departementRepository.findAll();
     }
+
+
+
+    /**
+     * Méthode pour récupérer un département par son ID
+     * @param id L'ID du département
+     * @return Le département
+     */
+    public Departement extractDepartement(Long id) {
+        return departementRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Aucun département trouvé avec l'ID : " + id));
+    }
+//    /**
+//     * <p>Méthode pour récupérer un département à partir de son id
+//     * via la couche d'accès aux données </p>
+//     * <p> Si l'id est négatif, une exception est levée.</p>
+//     * @param id id de la ville
+//     * @return Ville
+//     */
+//    public Departement extractDepartement(Long id)  {
+//
+//        return departementDao.extractDepartement(id);
+//    }
 
     /**
      * <p>Méthode pour récupérer un département à partir de son nom </p>
      * <p>Si le nom est vide, une exception est levée.</p>
+     *
      * @param nom
      * @return le département
      */
-    public Departement extractDepartement(String nom) {
-        return departementDao.extractDepartement(nom);
+    public Optional<Departement> extractDepartementParNom(String nom) {
+        return departementRepository.findByNom(nom);
     }
 
     /**
@@ -62,8 +91,14 @@ public class DepartementService {
      * @return Liste des départements après ajout
      */
     public List<Departement> insertDepartement(Departement departement) {
-        departementDao.insertDepartement(departement);
-        return departementDao.extractDepartement();
+        Departement nouveauDepartement = departement;
+        if(nouveauDepartement.getNom() != null) {
+            nouveauDepartement.setNom(departement.getNom());
+        } else if (!departementRepository.existsByNom(departement.getNom())) {
+            departementRepository.save(nouveauDepartement);
+        }
+
+        return departementRepository.findAll();
     }
 
 
@@ -75,11 +110,12 @@ public class DepartementService {
      * @return Liste des villes après modification
      */
     public List<Departement>modifierDepartement(Long idDepartement, Departement departementModifie) {
-        Departement departementAModifier = departementDao.extractDepartement(idDepartement);
-        if (departementAModifier!= null) {
-            departementDao.modifierDepartement(departementAModifier.getId(), departementModifie);
+        if(departementRepository.existsById(idDepartement)){
+            if(departementModifie!= null){
+                departementRepository.save(departementModifie);
+            }
         }
-        return departementDao.extractDepartement();
+        return departementRepository.findAll();
     }
 
     /**
@@ -89,10 +125,10 @@ public class DepartementService {
      * @return Liste des villes après suppression
      */
     public List<Departement> supprimerDepartement(Long idDepartement) {
-        Departement departementASupprimer = departementDao.extractDepartement(idDepartement);
-        if (departementASupprimer!= null) {
-            departementDao.supprimerDepartement(departementASupprimer.getId());
+
+        if (departementRepository.existsById(idDepartement)) {
+            departementRepository.deleteById(idDepartement);
         }
-        return departementDao.extractDepartement();
+        return departementRepository.findAll();
     }
 }

@@ -4,11 +4,11 @@ import fr.diginamic.hello.dto.VilleDto;
 import fr.diginamic.hello.dto.VilleMapper;
 import fr.diginamic.hello.entites.Ville;
 import fr.diginamic.hello.services.VilleService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +22,9 @@ public class VilleControleur {
 
 
     @GetMapping("/pagination")
-    public List<VilleDto> getVilles(@RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "100") int taille) {
-        return VilleMapper.toDtoList(villes.extractVille(page, taille));
+    public Page<VilleDto> getVilles(@RequestParam int page, @RequestParam int taille) {
+        PageRequest pageable = PageRequest.of(page, taille);
+        return villes.extractVillePageable(pageable);
     }
     /**
      * Méthode extractVille qui renvoi la liste de villes connues dans la base
@@ -56,7 +56,7 @@ public class VilleControleur {
     }
 
     @PostMapping
-    public ResponseEntity<String> insertVille(@RequestBody Ville ville) {
+    public ResponseEntity<String> insertVille(@RequestBody VilleDto ville) {
 
         try {
             villes.insertVille(ville);

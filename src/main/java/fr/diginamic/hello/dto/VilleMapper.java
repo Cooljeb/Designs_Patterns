@@ -1,7 +1,7 @@
 package fr.diginamic.hello.dto;
 
+import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
-import org.mariadb.jdbc.client.Client;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,6 +35,17 @@ public class VilleMapper {
                 .map(VilleMapper::toDto)
                 .collect(Collectors.toList());
 
+    }
+
+    public static Ville toBean(VilleDto villeDto) {
+        Ville bean = new Ville();
+        Departement departement = new Departement();
+        bean.setId(villeDto.getId());
+        bean.setNom(villeDto.getNom().toLowerCase());
+        bean.setNbHabitants(villeDto.getNbHabitants());
+        departement.setCode(villeDto.getCodeDepartement());
+        departement.setNom(villeDto.getNomdepartement().toLowerCase());
+        return  bean;
     }
 }
 

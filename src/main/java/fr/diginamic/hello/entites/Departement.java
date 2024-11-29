@@ -28,6 +28,7 @@ public class Departement {
     @OneToMany(mappedBy = "departement")
     private List<Ville> villes = new ArrayList<Ville>();
 
+    private Integer nbHabitants;
     /**Département par défaut*/
     public Departement(){
 
@@ -124,5 +125,22 @@ public class Departement {
      */
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Integer getNbHabitants(){
+        int total = 0;
+        for(Ville ville : villes){
+            total += ville.getNbHabitants();
+        }
+        return total;
+    }
+
+    /**
+     * Définit la valeur de {@link #nbHabitants}.
+     *
+     * @param nbHabitants la nouvelle valeur de nbHabitants.
+     */
+    public void setNbHabitants(Integer nbHabitants) {
+        this.nbHabitants = nbHabitants;
     }
 }
