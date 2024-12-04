@@ -3,6 +3,7 @@ package fr.diginamic.hello.dao;
 import fr.diginamic.hello.entites.Ville;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +38,8 @@ public class VilleDao {
      * @param id identifiant de la ville à rechercher
      * @return la ville trouvée
      */
-    @Transactional
-    public Ville extractVille(int id) {
+
+    public Ville extractVille(Long id) {
         return em.find(Ville.class, id);
     }
 
@@ -47,7 +48,7 @@ public class VilleDao {
      * @param nom de la ville à rechercher
      * @return la ville trouvée
      */
-    @Transactional
+
     public Ville extractVille(String nom) {
         return em.createQuery("SELECT v FROM Ville v WHERE v.nom = :nom", Ville.class)
                .setParameter("nom", nom)
@@ -72,7 +73,7 @@ public class VilleDao {
      * @return la liste des villes après modification
      */
     @Transactional
-    public List<Ville>modifierVille(int idVille, Ville villeModifiee) {
+    public List<Ville>modifierVille(Long idVille, Ville villeModifiee) {
         em.merge(villeModifiee);
         return extractVille();
     }
@@ -83,7 +84,7 @@ public class VilleDao {
      * @return la liste des villes après suppression
      */
     @Transactional
-    public List<Ville> supprimerVille(int idVille) {
+    public List<Ville> supprimerVille(Long idVille) {
         Ville villeASupprimer = extractVille(idVille);
         if (villeASupprimer!= null) {
             em.remove(villeASupprimer);
@@ -91,4 +92,8 @@ public class VilleDao {
         return extractVille();
     }
 
+    public List<Ville> rechercheVilleLesPlusPeuplees(String codeDep, Integer n) {
+        TypedQuery<Ville> query = em.createQuery("SELECT v FROM Ville V where V.department.code=\""+codeDep+"\" order by nbInhabitants desc LIMIT "+n,Ville.class);
+        return query.getResultList();
+    }
 }
