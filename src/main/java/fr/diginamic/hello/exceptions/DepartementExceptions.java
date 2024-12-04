@@ -32,4 +32,5 @@ public class DepartementExceptions extends RuntimeException{
             super("Ce code de département" + nom + " est déjà utilisé pour le département.");
         }
     }
+
 }

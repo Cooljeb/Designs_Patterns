@@ -4,6 +4,9 @@ import fr.diginamic.hello.dto.VilleDto;
 import fr.diginamic.hello.dto.VilleMapper;
 import fr.diginamic.hello.entites.Departement;
 import fr.diginamic.hello.entites.Ville;
+import fr.diginamic.hello.exceptions.DepartementExceptions;
+import fr.diginamic.hello.exceptions.VillesExceptions;
+import fr.diginamic.hello.exceptions.VillesExceptions.ErreurNomVilleDepartementExceptions;
 import fr.diginamic.hello.repositories.DepartementRepository;
 import fr.diginamic.hello.repositories.VilleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,14 +89,27 @@ public class VilleService {
         Optional<Ville> nouvelleVille = villeRepository.findById(villeDto.getId());
         // On vérifie que la ville n'est pas déjà présente
         if(nouvelleVille.isPresent()){
-            throw  new IllegalArgumentException("Une ville avec le nom '" + villeDto.getNom() + "' existe déjà.");
+            throw  new VillesExceptions("Une ville avec le nom '" + villeDto.getNom() + "' existe déjà.");
         }
         //on vérifie que le département n'existe pas encore
         Optional<Departement>dptNouvelleVille = departementRepository.findByNom(villeDto.getCodeDepartement());
 
         if(dptNouvelleVille.isEmpty()){
-            throw  new IllegalArgumentException("Le département avec le code '"
+            throw  new DepartementExceptions("Le département avec le code '"
                     + villeDto.getCodeDepartement() + "' n'existe pas.");
+        }
+
+        if(dptNouvelleVille.isPresent() && nouvelleVille.isPresent()){
+            throw new VillesExceptions.ErreurNomVilleDepartementExceptions(villeDto.getNom());
+        }
+        if(villeDto.getCodeDepartement().length()<2){
+            throw new VillesExceptions.ErreurNbCaractereDepartementExceptions(villeDto.getCodeDepartement());
+        }
+        if(villeDto.getNbHabitants()<10){
+            throw new VillesExceptions.ErreurNombreHabitantMinimunVilleExceptions(villeDto.getNbHabitants());
+        }
+        if(villeDto.getNom().length()<2){
+            throw new VillesExceptions.ErreurNomVilleExceptions(villeDto.getNom());
         }
         Ville ville = VilleMapper.toBean(villeDto);
         ville.setDepartement(dptNouvelleVille.get());
