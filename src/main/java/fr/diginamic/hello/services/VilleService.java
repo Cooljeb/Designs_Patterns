@@ -76,8 +76,9 @@ public class VilleService {
      * @return Ville
      */
     public Ville extractVille(String nom) {
-            //return villeDao.extractVille(nom);
-        return villeRepository.findByNom(nom);
+
+        return villeRepository.findByNom(nom)
+                .orElseThrow(() -> new VillesExceptions.ErreurVilleAbsenteExceptions(nom));
     }
 
     /**

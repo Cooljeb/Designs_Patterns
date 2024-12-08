@@ -40,7 +40,7 @@ public interface VilleRepository extends CrudRepository<Ville,Long>, JpaReposito
     Optional<Ville> findById(Long id);
 
     /**Retourne une ville par son nom*/
-    Ville findByNom(String nom);
+    Optional<Ville>  findByNom(String nom);
 
     /** teste l'existance de la ville dans la bdd*/
     boolean existsById(Long id);
